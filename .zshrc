@@ -12,6 +12,22 @@ else
   compinit -C
 fi
 
+# History
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt EXTENDED_HISTORY       # save timestamps
+setopt SHARE_HISTORY          # share across concurrent sessions
+setopt HIST_IGNORE_DUPS       # skip immediate repeated commands
+setopt HIST_IGNORE_ALL_DUPS   # remove older dupes when a new one is added
+setopt HIST_IGNORE_SPACE       # leading space = don't record (secrets, one-offs)
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY            # expand history refs into the buffer before running
+
+# Nav / correction
+setopt AUTO_CD                # `foo` == `cd foo` for directories
+setopt CORRECT                # suggest fixes for command typos
+
 # Path update to include local packages
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
@@ -27,22 +43,8 @@ case ":$PATH:" in
 esac
 # pnpm end
 
-ZSH_THEME="spaceship"
-
-# Spaceship settings
-SPACESHIP_PROMPT_ASYNC=true
-SPACESHIP_PROMPT_ADD_NEWLINE=true
-# SPACESHIP_CHAR_SYMBOL="⚡"
-
-# Minimal spaceship sections for performance
-SPACESHIP_PROMPT_ORDER=(
-  time
-  user
-  dir
-  git
-  line_sep
-  char
-)
+# Theme is handled by starship (see below) instead of an oh-my-zsh theme.
+ZSH_THEME=""
 
 zstyle ':omz:update' mode reminder
 zstyle ':omz:update' frequency 30
@@ -59,6 +61,13 @@ source $ZSH/oh-my-zsh.sh
 alias zshconfig="nano ~/.zshrc"
 alias ohmyzsh="nano ~/.oh-my-zsh"
 
+# eza / bat
+alias ls='eza --group-directories-first --icons'
+alias ll='eza -l --group-directories-first --icons'
+alias la='eza -la --group-directories-first --icons'
+alias lt='eza --tree --level=2 --icons'
+alias cat='bat --paging=never'
+
 # Autosuggest settings
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#663399,standout"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
@@ -70,6 +79,23 @@ acp() {
   git commit -m "$1" && \
   git push origin HEAD
 }
+
+# fzf: Ctrl-T (find files), Alt-C (cd into dir). Ctrl-R is rebound by atuin below.
+[[ -f ~/.fzf/shell/completion.zsh ]] && source ~/.fzf/shell/completion.zsh
+[[ -f ~/.fzf/shell/key-bindings.zsh ]] && source ~/.fzf/shell/key-bindings.zsh
+
+# zoxide: `z <partial name>` jumps to a frecency-ranked directory match
+eval "$(zoxide init zsh)"
+
+# direnv: per-project env vars via .envrc
+eval "$(direnv hook zsh)"
+
+# atuin: SQLite-backed shell history with fuzzy search (rebinds Ctrl-R)
+[[ -f "$HOME/.atuin/bin/env" ]] && . "$HOME/.atuin/bin/env"
+eval "$(atuin init zsh)"
+
+# starship prompt (config: ~/.config/starship.toml, symlinked from this repo)
+eval "$(starship init zsh)"
 
 # Machine-specific config (work env vars, secrets, one-off paths).
 # Keep anything private here — this file is NOT tracked in the dotfiles repo.

@@ -1,0 +1,42 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Mirrors the old spaceship layout: time, user, dir, git, then a newline before the prompt char.
+format = """
+$time\
+$username\
+$directory\
+$git_branch\
+$git_status\
+$line_break\
+$character"""
+
+add_newline = true
+
+[time]
+disabled = false
+format = '[$time]($style) '
+time_format = '%T'
+style = 'bold blue'
+
+[username]
+show_always = true
+format = '[$user]($style) '
+style_user = 'bold green'
+
+[directory]
+style = 'bold cyan'
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+format = '[$symbol$branch]($style) '
+symbol = ' '
+style = 'bold purple'
+
+[git_status]
+format = '[$all_status$ahead_behind]($style) '
+style = 'bold red'
+
+[character]
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold red)'
