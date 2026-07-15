@@ -6,7 +6,7 @@ autosuggestions, syntax highlighting, and startup-speed tweaks.
 ## Install on a new machine
 
 ```sh
-git clone https://github.com/pkharwar/dotfiles.git ~/dotfiles
+git clone https://github.com/ParthKharwar/dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
 exec zsh
 ```
